@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: camel-dwarf-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: camel_dwarf_racing
+      POSTGRES_USER: race_admin
+      POSTGRES_PASSWORD: race_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

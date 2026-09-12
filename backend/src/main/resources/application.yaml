@@ -1,3 +1,14 @@
 spring:
   application:
     name: camel-dwarf-racing-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/camel_dwarf_racing
+    username: race_admin
+    password: race_password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
