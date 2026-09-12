@@ -9,10 +9,8 @@ import com.example.camel_dwarf_racing_api.model.CompetitorStatus;
 import com.example.camel_dwarf_racing_api.model.CompetitorType;
 import com.example.camel_dwarf_racing_api.repository.CompetitorRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
 @Service
 public class CompetitorService {

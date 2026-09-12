@@ -8,8 +8,6 @@ import com.example.camel_dwarf_racing_api.model.CompetitorType;
 import com.example.camel_dwarf_racing_api.service.CompetitorService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

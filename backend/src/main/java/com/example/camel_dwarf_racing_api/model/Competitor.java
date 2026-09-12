@@ -55,4 +55,7 @@ public class Competitor {
     @Column(nullable = false, updatable = false)
     private LocalDate registrationDate = LocalDate.now();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 }
