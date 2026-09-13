@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -301,6 +302,23 @@ public class GlobalExceptionHandler {
 
         @ExceptionHandler(InsufficientParticipantsException.class)
         public ResponseEntity<ErrorResponseDto> handleInsufficientParticipants(InsufficientParticipantsException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ErrorResponseDto> handleBadCredentials(BadCredentialsException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.UNAUTHORIZED.value(),
+                                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                                "Invalid username or password.", request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
+
+        @ExceptionHandler(DuplicateUsernameException.class)
+        public ResponseEntity<ErrorResponseDto> handleDuplicateUsername(DuplicateUsernameException ex,
                         HttpServletRequest request) {
                 ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
                                 HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());

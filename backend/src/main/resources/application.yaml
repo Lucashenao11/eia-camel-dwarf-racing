@@ -14,3 +14,6 @@ spring:
         format_sql: true
 team:
   max-members: 5
+jwt:
+  secret: "change-this-to-a-long-random-string-at-least-256-bits-for-hs256"
+  expiration-ms: 3600000
