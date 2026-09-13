@@ -22,10 +22,13 @@ public class TeamService {
     private int maxTeamMembers;
     private final TeamRepository teamRepository;
     private final CompetitorRepository competitorRepository;
+    private final AuditLogService auditLogService;
 
-    public TeamService(TeamRepository teamRepository, CompetitorRepository competitorRepository) {
+    public TeamService(TeamRepository teamRepository, CompetitorRepository competitorRepository,
+            AuditLogService auditLogService) {
         this.teamRepository = teamRepository;
         this.competitorRepository = competitorRepository;
+        this.auditLogService = auditLogService;
     }
 
     public TeamResponseDto createTeam(TeamRequestDto requestDto) {
@@ -42,6 +45,8 @@ public class TeamService {
         team.setCoach(requestDto.getCoach());
 
         Team saved = teamRepository.save(team);
+        auditLogService.record("system", "CREATE", "Team", saved.getId(),
+                "Created team: " + saved.getName());
         return toResponseDto(saved);
     }
 
@@ -101,7 +106,8 @@ public class TeamService {
 
         team.getCompetitors().add(competitor);
         Team saved = teamRepository.save(team);
-
+        auditLogService.record("system", "UPDATE", "Team", saved.getId(),
+                "Added competitor " + competitor.getNickname() + " to team " + saved.getName());
         return toResponseDto(saved);
     }
 
@@ -144,7 +150,8 @@ public class TeamService {
         // TODO (Module 4+): once Race/RaceResult exist, check for official race history
         // and set status = DEACTIVATED instead of deleting, per the spec's rule that a
         // team with official race history cannot be deleted.
-
+        auditLogService.record("system", "DELETE", "Team", team.getId(),
+                "Deleted team: " + team.getName());
         teamRepository.delete(team);
     }
 
@@ -165,7 +172,8 @@ public class TeamService {
 
         team.getCompetitors().remove(competitor);
         Team saved = teamRepository.save(team);
-
+        auditLogService.record("system", "UPDATE", "Team", saved.getId(),
+                "Removed competitor " + competitor.getNickname() + " from team " + saved.getName());
         return toResponseDto(saved);
     }
 }

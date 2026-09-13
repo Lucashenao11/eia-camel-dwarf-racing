@@ -7,6 +7,8 @@ import com.example.camel_dwarf_racing_api.exception.*;
 import com.example.camel_dwarf_racing_api.model.Race;
 import com.example.camel_dwarf_racing_api.model.RaceStatus;
 import com.example.camel_dwarf_racing_api.model.RaceType;
+import com.example.camel_dwarf_racing_api.model.RegistrationStatus;
+import com.example.camel_dwarf_racing_api.repository.RaceRegistrationRepository;
 import com.example.camel_dwarf_racing_api.repository.RaceRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,21 +24,27 @@ import java.util.Set;
 public class RaceService {
 
     private final RaceRepository raceRepository;
-
+    private final RaceRegistrationRepository raceRegistrationRepository;
+    private final AuditLogService auditLogService;
     // Legal status transitions: from -> allowed next states.
     // COMPLETED and CANCELLED have no outgoing transitions (terminal states).
     private static final Map<RaceStatus, Set<RaceStatus>> ALLOWED_TRANSITIONS = new EnumMap<>(RaceStatus.class);
     static {
         ALLOWED_TRANSITIONS.put(RaceStatus.DRAFT, EnumSet.of(RaceStatus.OPEN_FOR_REGISTRATION, RaceStatus.CANCELLED));
-        ALLOWED_TRANSITIONS.put(RaceStatus.OPEN_FOR_REGISTRATION, EnumSet.of(RaceStatus.CLOSED_FOR_REGISTRATION, RaceStatus.CANCELLED));
-        ALLOWED_TRANSITIONS.put(RaceStatus.CLOSED_FOR_REGISTRATION, EnumSet.of(RaceStatus.IN_PROGRESS, RaceStatus.CANCELLED));
+        ALLOWED_TRANSITIONS.put(RaceStatus.OPEN_FOR_REGISTRATION,
+                EnumSet.of(RaceStatus.CLOSED_FOR_REGISTRATION, RaceStatus.CANCELLED));
+        ALLOWED_TRANSITIONS.put(RaceStatus.CLOSED_FOR_REGISTRATION,
+                EnumSet.of(RaceStatus.IN_PROGRESS, RaceStatus.CANCELLED));
         ALLOWED_TRANSITIONS.put(RaceStatus.IN_PROGRESS, EnumSet.of(RaceStatus.COMPLETED));
         ALLOWED_TRANSITIONS.put(RaceStatus.COMPLETED, EnumSet.noneOf(RaceStatus.class));
         ALLOWED_TRANSITIONS.put(RaceStatus.CANCELLED, EnumSet.noneOf(RaceStatus.class));
     }
 
-    public RaceService(RaceRepository raceRepository) {
+    public RaceService(RaceRepository raceRepository, RaceRegistrationRepository raceRegistrationRepository,
+            AuditLogService auditLogService) {
         this.raceRepository = raceRepository;
+        this.raceRegistrationRepository = raceRegistrationRepository;
+        this.auditLogService = auditLogService;
     }
 
     public RaceResponseDto createRace(RaceRequestDto requestDto) {
@@ -46,6 +54,8 @@ public class RaceService {
         applyRequestDto(race, requestDto);
 
         Race saved = raceRepository.save(race);
+        auditLogService.record("system", "CREATE", "Race", saved.getId(),
+                "Created race: " + saved.getName());
         return toResponseDto(saved);
     }
 
@@ -99,15 +109,23 @@ public class RaceService {
             throw new InvalidRaceStatusTransitionException(currentStatus, newStatus);
         }
 
-        // TODO (Module 5): before allowing IN_PROGRESS, verify at least two approved
-        // registrations exist ("at least two valid participants are required to start").
-        // TODO (Module 6): before allowing COMPLETED, verify official results have been recorded
+        if (newStatus == RaceStatus.IN_PROGRESS) {
+            long approvedCount = raceRegistrationRepository.countByRaceIdAndStatus(id, RegistrationStatus.APPROVED);
+            if (approvedCount < 2) {
+                throw new InsufficientParticipantsException(id, approvedCount);
+            }
+        }
+        // TODO (Module 6): before allowing COMPLETED, verify official results have been
+        // recorded
         // ("a race cannot be completed without official results").
-
+        String previousStatus = currentStatus.toString();
         race.setStatus(newStatus);
         race.setUpdatedAt(LocalDateTime.now());
 
         Race saved = raceRepository.save(race);
+        String action = (newStatus == RaceStatus.CANCELLED) ? "CANCEL" : "STATUS_CHANGE";
+        auditLogService.record("system", action, "Race", saved.getId(),
+                "Race status changed", previousStatus, newStatus.toString());
         return toResponseDto(saved);
     }
 
@@ -117,7 +135,8 @@ public class RaceService {
 
         // TODO (Module 5): once RaceRegistration exists, consider blocking hard-delete
         // for races that already have registrations, similar to Competitor/Team guards.
-
+        auditLogService.record("system", "DELETE", "Race", race.getId(),
+                "Deleted race: " + race.getName());
         raceRepository.delete(race);
     }
 

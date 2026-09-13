@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.util.stream.Collectors;
 
@@ -187,5 +187,123 @@ public class GlobalExceptionHandler {
                                 request.getRequestURI());
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+
+        @ExceptionHandler(RegistrationNotFoundException.class)
+        public ResponseEntity<ErrorResponseDto> handleRegistrationNotFound(RegistrationNotFoundException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.NOT_FOUND.value(),
+                                HttpStatus.NOT_FOUND.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+
+        @ExceptionHandler(InvalidRegistrationRequestException.class)
+        public ResponseEntity<ErrorResponseDto> handleInvalidRegistrationRequest(InvalidRegistrationRequestException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(),
+                                HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+
+        @ExceptionHandler(RegistrationClosedException.class)
+        public ResponseEntity<ErrorResponseDto> handleRegistrationClosed(RegistrationClosedException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(DuplicateRegistrationException.class)
+        public ResponseEntity<ErrorResponseDto> handleDuplicateRegistration(DuplicateRegistrationException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(IneligibleParticipantException.class)
+        public ResponseEntity<ErrorResponseDto> handleIneligibleParticipant(IneligibleParticipantException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(RegistrationAlreadyProcessedException.class)
+        public ResponseEntity<ErrorResponseDto> handleRegistrationAlreadyProcessed(
+                        RegistrationAlreadyProcessedException ex, HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(NoResourceFoundException.class)
+        public ResponseEntity<ErrorResponseDto> handleNoResourceFound(
+                        NoResourceFoundException ex,
+                        HttpServletRequest request) {
+
+                ErrorResponseDto error = new ErrorResponseDto(
+                                HttpStatus.NOT_FOUND.value(),
+                                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                                "The requested endpoint does not exist.",
+                                request.getRequestURI());
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+
+        @ExceptionHandler(ResultNotFoundException.class)
+        public ResponseEntity<ErrorResponseDto> handleResultNotFound(ResultNotFoundException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.NOT_FOUND.value(),
+                                HttpStatus.NOT_FOUND.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+
+        @ExceptionHandler(RaceNotInProgressException.class)
+        public ResponseEntity<ErrorResponseDto> handleRaceNotInProgress(RaceNotInProgressException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(RegistrationNotApprovedException.class)
+        public ResponseEntity<ErrorResponseDto> handleRegistrationNotApproved(RegistrationNotApprovedException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(DuplicateResultException.class)
+        public ResponseEntity<ErrorResponseDto> handleDuplicateResult(DuplicateResultException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(InvalidResultDataException.class)
+        public ResponseEntity<ErrorResponseDto> handleInvalidResultData(InvalidResultDataException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(),
+                                HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+
+        @ExceptionHandler(DuplicateFinalPositionException.class)
+        public ResponseEntity<ErrorResponseDto> handleDuplicateFinalPosition(DuplicateFinalPositionException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        @ExceptionHandler(InsufficientParticipantsException.class)
+        public ResponseEntity<ErrorResponseDto> handleInsufficientParticipants(InsufficientParticipantsException ex,
+                        HttpServletRequest request) {
+                ErrorResponseDto error = new ErrorResponseDto(HttpStatus.CONFLICT.value(),
+                                HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
         }
 }
