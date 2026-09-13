@@ -1,0 +1,51 @@
+<div class="container">
+  <a [routerLink]="['/races', raceId]" style="font-size:14px">&larr; Back to Race</a>
+  <h1>Record Results</h1>
+
+  <div class="card">
+    <h3>New Result</h3>
+    <div class="form-group">
+      <label>Registration</label>
+      <select [(ngModel)]="newResult.registrationId" name="registrationId">
+        <option [ngValue]="null">Select participant...</option>
+        <option *ngFor="let r of approvedRegistrations" [ngValue]="r.id">{{ r.competitorNickname || r.teamName }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Status</label>
+      <select [(ngModel)]="newResult.status" name="status">
+        <option value="FINISHED">Finished</option>
+        <option value="DISQUALIFIED">Disqualified</option>
+        <option value="DID_NOT_FINISH">Did Not Finish</option>
+        <option value="DID_NOT_START">Did Not Start</option>
+      </select>
+    </div>
+    <div class="form-group" *ngIf="newResult.status === 'FINISHED'">
+      <label>Final Position</label>
+      <input type="number" [(ngModel)]="newResult.finalPosition" name="finalPosition" />
+    </div>
+    <div class="form-group" *ngIf="newResult.status === 'FINISHED'">
+      <label>Completion Time (seconds)</label>
+      <input type="number" step="0.1" [(ngModel)]="newResult.completionTimeSeconds" name="completionTimeSeconds" />
+    </div>
+    <button class="btn btn-primary" (click)="submitResult()" [disabled]="!newResult.registrationId">Record Result</button>
+  </div>
+
+  <div class="card">
+    <div class="loading" *ngIf="loading">Loading...</div>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="empty-state" *ngIf="!loading && results.length === 0">No results recorded yet.</div>
+
+    <table *ngIf="!loading && results.length > 0">
+      <thead><tr><th>Participant</th><th>Position</th><th>Time (s)</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let r of results">
+          <td>{{ r.participantName }}</td>
+          <td>{{ r.finalPosition ?? '—' }}</td>
+          <td>{{ r.completionTimeSeconds ?? '—' }}</td>
+          <td><span class="badge badge-{{ r.status.toLowerCase() }}">{{ r.status }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

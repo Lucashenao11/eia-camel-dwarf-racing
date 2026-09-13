@@ -1,0 +1,15 @@
+<nav class="navbar" *ngIf="authService.isLoggedIn()">
+  <div class="navbar-brand">🐫 Camel vs Dwarf Racing</div>
+  <div class="navbar-links">
+    <a routerLink="/dashboard">Dashboard</a>
+    <a routerLink="/competitors" *ngIf="authService.hasAnyRole(['ADMINISTRATOR', 'RACE_ORGANIZER'])">Competitors</a>
+    <a routerLink="/teams" *ngIf="authService.hasAnyRole(['ADMINISTRATOR', 'RACE_ORGANIZER'])">Teams</a>
+    <a routerLink="/races">Races</a>
+    <a routerLink="/standings">Standings</a>
+  </div>
+  <div class="navbar-user">
+    <span>{{ authService.getUsername() }} ({{ authService.getRole() }})</span>
+    <a routerLink="/profile">Profile</a>
+    <button class="btn btn-secondary" (click)="logout()">Logout</button>
+  </div>
+</nav>

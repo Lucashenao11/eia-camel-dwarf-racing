@@ -1,0 +1,31 @@
+<div class="container" style="max-width:500px">
+  <h1>New Race</h1>
+  <div class="card">
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group"><label>Name</label><input type="text" formControlName="name" /></div>
+      <div class="form-group"><label>Description</label><input type="text" formControlName="description" /></div>
+      <div class="form-group"><label>Scheduled Date/Time</label><input type="datetime-local" formControlName="scheduledDateTime" /></div>
+      <div class="form-group"><label>Registration Deadline</label><input type="datetime-local" formControlName="registrationDeadline" /></div>
+      <div class="form-group"><label>Start Location</label><input type="text" formControlName="startLocation" /></div>
+      <div class="form-group"><label>Finish Location</label><input type="text" formControlName="finishLocation" /></div>
+      <div class="form-group"><label>Distance (meters)</label><input type="number" formControlName="distanceMeters" /></div>
+      <div class="form-group"><label>Max Participants</label><input type="number" formControlName="maxParticipants" /></div>
+      <div class="form-group">
+        <label>Type</label>
+        <select formControlName="type">
+          <option value="">Select...</option>
+          <option value="INDIVIDUAL">Individual</option>
+          <option value="TEAM">Team</option>
+          <option value="MIXED">Mixed</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Organizer</label><input type="text" formControlName="organizer" /></div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+        {{ loading ? 'Creating...' : 'Create Race' }}
+      </button>
+    </form>
+  </div>
+</div>

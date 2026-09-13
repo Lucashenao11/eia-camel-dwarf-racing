@@ -1,0 +1,37 @@
+<div class="container">
+  <a routerLink="/races" style="font-size:14px">&larr; Back to Races</a>
+
+  <div class="loading" *ngIf="loading">Loading...</div>
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div *ngIf="!loading && race">
+    <div class="page-header">
+      <h1>{{ race.name }}</h1>
+      <span class="badge badge-{{ race.status.toLowerCase() }}" style="font-size:14px">{{ race.status }}</span>
+    </div>
+    <p style="color:var(--text-muted)">{{ race.description }}</p>
+
+    <div class="card">
+      <p><strong>Type:</strong> {{ race.type }}</p>
+      <p><strong>Scheduled:</strong> {{ race.scheduledDateTime | date:'medium' }}</p>
+      <p><strong>Registration Deadline:</strong> {{ race.registrationDeadline | date:'medium' }}</p>
+      <p><strong>Route:</strong> {{ race.startLocation }} &rarr; {{ race.finishLocation }} ({{ race.distanceMeters }}m)</p>
+      <p><strong>Max Participants:</strong> {{ race.maxParticipants }}</p>
+      <p><strong>Organizer:</strong> {{ race.organizer }}</p>
+    </div>
+
+    <div class="card" *ngIf="authService.hasAnyRole(['ADMINISTRATOR', 'RACE_ORGANIZER']) && availableTransitions.length > 0">
+      <h3>Change Status</h3>
+      <div style="display:flex; gap:10px;">
+        <button *ngFor="let s of availableTransitions" class="btn btn-secondary" (click)="changeStatus(s)">
+          &rarr; {{ s }}
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:16px;" *ngIf="authService.hasAnyRole(['ADMINISTRATOR', 'RACE_ORGANIZER'])">
+      <a [routerLink]="['/races', race.id, 'registrations']" class="btn btn-primary">Manage Registrations</a>
+      <a [routerLink]="['/races', race.id, 'results']" class="btn btn-primary">Manage Results</a>
+    </div>
+  </div>
+</div>
