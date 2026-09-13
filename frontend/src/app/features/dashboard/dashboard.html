@@ -1,0 +1,31 @@
+<div class="container">
+  <h1>Welcome, {{ authService.getUsername() }}</h1>
+  <p style="color:var(--text-muted)">Role: {{ authService.getRole() }}</p>
+
+  <div class="card">
+    <h3>Recent Races</h3>
+    <div class="loading" *ngIf="loading">Loading...</div>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="empty-state" *ngIf="!loading && upcomingRaces.length === 0">No races yet.</div>
+
+    <table *ngIf="!loading && upcomingRaces.length > 0">
+      <thead>
+        <tr><th>Name</th><th>Type</th><th>Status</th><th>Scheduled</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let race of upcomingRaces">
+          <td>{{ race.name }}</td>
+          <td>{{ race.type }}</td>
+          <td><span class="badge badge-{{ race.status.toLowerCase() }}">{{ race.status }}</span></td>
+          <td>{{ race.scheduledDateTime | date:'medium' }}</td>
+          <td><a [routerLink]="['/races', race.id]" class="btn btn-secondary">View</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="display:flex; gap:12px; margin-top:20px;">
+    <a routerLink="/races" class="btn btn-primary">All Races</a>
+    <a routerLink="/standings" class="btn btn-secondary">Standings</a>
+  </div>
+</div>

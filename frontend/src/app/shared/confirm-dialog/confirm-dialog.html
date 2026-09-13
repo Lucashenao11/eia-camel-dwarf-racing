@@ -1,0 +1,9 @@
+<div class="overlay" *ngIf="confirmService.visible()">
+  <div class="dialog">
+    <p>{{ confirmService.message() }}</p>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" (click)="confirmService.respond(false)">Cancel</button>
+      <button class="btn btn-danger" (click)="confirmService.respond(true)">Confirm</button>
+    </div>
+  </div>
+</div>

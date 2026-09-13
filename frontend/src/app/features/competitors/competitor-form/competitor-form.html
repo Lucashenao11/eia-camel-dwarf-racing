@@ -1,0 +1,47 @@
+<div class="container" style="max-width:500px">
+  <h1>{{ isEditMode ? 'Edit' : 'New' }} Competitor</h1>
+  <div class="card">
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" formControlName="name" />
+      </div>
+      <div class="form-group">
+        <label>Nickname</label>
+        <input type="text" formControlName="nickname" />
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select formControlName="type">
+          <option value="">Select...</option>
+          <option value="DWARF">Dwarf</option>
+          <option value="CAMEL">Camel</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" formControlName="dateOfBirth" />
+      </div>
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input type="number" step="0.1" formControlName="weight" />
+      </div>
+      <div class="form-group">
+        <label>Height (cm)</label>
+        <input type="number" step="0.1" formControlName="height" />
+      </div>
+      <div class="form-group">
+        <label>Country of Origin</label>
+        <input type="text" formControlName="countryOfOrigin" />
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+        {{ loading ? 'Saving...' : 'Save' }}
+      </button>
+    </form>
+  </div>
+</div>

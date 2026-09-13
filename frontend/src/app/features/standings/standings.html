@@ -1,0 +1,27 @@
+<div class="container">
+  <h1>Standings</h1>
+
+  <div style="display:flex; gap:10px; margin-bottom:16px;">
+    <button class="btn" [class.btn-primary]="view === 'overall'" [class.btn-secondary]="view !== 'overall'" (click)="setView('overall')">Overall</button>
+    <button class="btn" [class.btn-primary]="view === 'competitors'" [class.btn-secondary]="view !== 'competitors'" (click)="setView('competitors')">Competitors</button>
+    <button class="btn" [class.btn-primary]="view === 'teams'" [class.btn-secondary]="view !== 'teams'" (click)="setView('teams')">Teams</button>
+  </div>
+
+  <div class="card">
+    <div class="loading" *ngIf="loading">Loading...</div>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="empty-state" *ngIf="!loading && standings.length === 0">No results recorded yet.</div>
+
+    <table *ngIf="!loading && standings.length > 0">
+      <thead><tr><th>#</th><th>Name</th><th>Type</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let s of standings; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ s.participantName }}</td>
+          <td>{{ s.participantType }}</td>
+          <td><strong>{{ s.points }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

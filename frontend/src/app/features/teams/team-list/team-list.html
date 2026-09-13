@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Teams</h1>
+    <button class="btn btn-primary" (click)="showForm = !showForm" *ngIf="authService.hasAnyRole(['ADMINISTRATOR'])">
+      {{ showForm ? 'Cancel' : '+ New Team' }}
+    </button>
+  </div>
+
+  <div class="card" *ngIf="showForm">
+    <h3>New Team</h3>
+    <div class="form-group"><label>Name</label><input type="text" [(ngModel)]="newTeam.name" name="name" /></div>
+    <div class="form-group"><label>Description</label><input type="text" [(ngModel)]="newTeam.description" name="description" /></div>
+    <div class="form-group"><label>Coach</label><input type="text" [(ngModel)]="newTeam.coach" name="coach" /></div>
+    <button class="btn btn-primary" (click)="createTeam()">Create</button>
+  </div>
+
+  <div class="card">
+    <div class="loading" *ngIf="loading">Loading...</div>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="empty-state" *ngIf="!loading && teams.length === 0">No teams found.</div>
+
+    <table *ngIf="!loading && teams.length > 0">
+      <thead><tr><th>Name</th><th>Coach</th><th>Members</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let t of teams">
+          <td>{{ t.name }}</td>
+          <td>{{ t.coach }}</td>
+          <td>{{ t.competitors.length }}</td>
+          <td><span class="badge badge-{{ t.status.toLowerCase() }}">{{ t.status }}</span></td>
+          <td>
+            <a [routerLink]="['/teams', t.id]" class="btn btn-secondary">View</a>
+            <button class="btn btn-danger" (click)="deleteTeam(t.id)" *ngIf="authService.hasAnyRole(['ADMINISTRATOR'])">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

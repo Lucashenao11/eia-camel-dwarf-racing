@@ -1,0 +1,31 @@
+<div class="container" style="max-width: 400px; margin-top: 60px;">
+  <div class="card">
+    <h2>Register</h2>
+    <p style="font-size:13px; color:var(--text-muted)">New accounts are created as Viewers.</p>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" formControlName="username" />
+        <div class="field-error" *ngIf="form.get('username')?.touched && form.get('username')?.invalid">
+          Username must be at least 3 characters.
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" formControlName="password" />
+        <div class="field-error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+          Password must be at least 6 characters.
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading" style="width:100%">
+        {{ loading ? 'Creating account...' : 'Register' }}
+      </button>
+    </form>
+
+    <p style="margin-top:14px; text-align:center; font-size:14px;">
+      Already have an account? <a routerLink="/login">Login here</a>
+    </p>
+  </div>
+</div>

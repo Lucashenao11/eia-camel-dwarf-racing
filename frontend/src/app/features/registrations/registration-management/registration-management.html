@@ -1,0 +1,52 @@
+<div class="container">
+  <a [routerLink]="['/races', raceId]" style="font-size:14px">&larr; Back to Race</a>
+  <h1>Manage Registrations</h1>
+
+  <div class="card">
+    <h3>Register a Participant</h3>
+    <div style="display:flex; gap:10px; margin-bottom:10px;">
+      <select [(ngModel)]="selectedCompetitorId" name="competitor" style="flex:1">
+        <option [ngValue]="null">Select competitor...</option>
+        <option *ngFor="let c of competitors" [ngValue]="c.id">{{ c.nickname }}</option>
+      </select>
+      <button class="btn btn-primary" (click)="registerCompetitor()" [disabled]="!selectedCompetitorId">Register Competitor</button>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <select [(ngModel)]="selectedTeamId" name="team" style="flex:1">
+        <option [ngValue]="null">Select team...</option>
+        <option *ngFor="let t of teams" [ngValue]="t.id">{{ t.name }}</option>
+      </select>
+      <button class="btn btn-primary" (click)="registerTeam()" [disabled]="!selectedTeamId">Register Team</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="loading" *ngIf="loading">Loading...</div>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="empty-state" *ngIf="!loading && registrations.length === 0">No registrations yet.</div>
+
+    <table *ngIf="!loading && registrations.length > 0">
+      <thead><tr><th>Participant</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let r of registrations">
+          <td>{{ r.competitorNickname || r.teamName }}</td>
+          <td><span class="badge badge-{{ r.status.toLowerCase() }}">{{ r.status }}</span></td>
+          <td *ngIf="r.status === 'PENDING'">
+            <button class="btn btn-primary" (click)="approve(r.id)">Approve</button>
+            <button class="btn btn-danger" (click)="startReject(r.id)">Reject</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" *ngIf="rejectingId">
+    <h3>Reject Registration</h3>
+    <div class="form-group">
+      <label>Reason</label>
+      <input type="text" [(ngModel)]="rejectReason" name="reason" />
+    </div>
+    <button class="btn btn-danger" (click)="confirmReject()" [disabled]="!rejectReason.trim()">Confirm Reject</button>
+    <button class="btn btn-secondary" (click)="rejectingId = null">Cancel</button>
+  </div>
+</div>
