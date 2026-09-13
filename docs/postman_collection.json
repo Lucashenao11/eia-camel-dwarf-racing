@@ -1,0 +1,370 @@
+{
+  "info": {
+    "name": "Camel vs Dwarf Racing API",
+    "description": "Full backend API for the EIA Camel vs. Dwarf Racing System. Set the `baseUrl` and `token` collection variables (token is filled in automatically by the Login request's test script).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testviewer\",\n  \"password\": \"password123\"\n}"
+            },
+            "auth": { "type": "noauth" }
+          }
+        },
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "auth": { "type": "noauth" }
+          }
+        },
+        {
+          "name": "Login (Organizer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"organizer\",\n  \"password\": \"organizer123\"\n}"
+            },
+            "auth": { "type": "noauth" }
+          }
+        },
+        {
+          "name": "Login (Viewer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"viewer\",\n  \"password\": \"viewer123\"\n}"
+            },
+            "auth": { "type": "noauth" }
+          }
+        },
+        {
+          "name": "Profile",
+          "request": { "method": "GET", "url": "{{baseUrl}}/auth/profile" }
+        }
+      ]
+    },
+    {
+      "name": "Competitors",
+      "item": [
+        {
+          "name": "Create Competitor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/competitors",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Byte\",\n  \"nickname\": \"Byte the Camel\",\n  \"type\": \"CAMEL\",\n  \"dateOfBirth\": \"2019-05-10\",\n  \"weight\": 480.5,\n  \"height\": 210.0,\n  \"countryOfOrigin\": \"Colombia\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Competitors",
+          "request": { "method": "GET", "url": "{{baseUrl}}/competitors?page=0&size=10" }
+        },
+        {
+          "name": "Get Competitor by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/competitors/1" }
+        },
+        {
+          "name": "Update Competitor",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/competitors/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Byte\",\n  \"nickname\": \"Byte the Great\",\n  \"type\": \"CAMEL\",\n  \"dateOfBirth\": \"2019-05-10\",\n  \"weight\": 490.0,\n  \"height\": 212.0,\n  \"countryOfOrigin\": \"Colombia\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Competitor Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/competitors/1/status",
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"INJURED\"\n}" }
+          }
+        },
+        {
+          "name": "Delete Competitor",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/competitors/1" }
+        }
+      ]
+    },
+    {
+      "name": "Teams",
+      "item": [
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/teams",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"The Five Exceptions\",\n  \"description\": \"Legendary dwarf squad\",\n  \"coach\": \"Mr. Abandonado\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Teams",
+          "request": { "method": "GET", "url": "{{baseUrl}}/teams?page=0&size=10" }
+        },
+        {
+          "name": "Get Team by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/teams/1" }
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/teams/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"The Five Exceptions\",\n  \"description\": \"Updated description\",\n  \"coach\": \"Mr. Abandonado\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Member to Team",
+          "request": { "method": "POST", "url": "{{baseUrl}}/teams/1/members/1" }
+        },
+        {
+          "name": "Remove Member from Team",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/teams/1/members/1" }
+        },
+        {
+          "name": "Delete Team",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/teams/1" }
+        }
+      ]
+    },
+    {
+      "name": "Races",
+      "item": [
+        {
+          "name": "Create Race",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/races",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mountain Sprint\",\n  \"description\": \"A fast one-kilometer sprint\",\n  \"scheduledDateTime\": \"2027-06-15T10:00:00\",\n  \"startLocation\": \"Village\",\n  \"finishLocation\": \"Mountain Peak\",\n  \"distanceMeters\": 5000,\n  \"maxParticipants\": 20,\n  \"type\": \"INDIVIDUAL\",\n  \"organizer\": \"Race Committee\",\n  \"registrationDeadline\": \"2027-06-10T10:00:00\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Races",
+          "request": { "method": "GET", "url": "{{baseUrl}}/races?page=0&size=10" }
+        },
+        {
+          "name": "Get Race by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/races/1" }
+        },
+        {
+          "name": "Update Race",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/races/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mountain Sprint\",\n  \"description\": \"Updated\",\n  \"scheduledDateTime\": \"2027-06-15T10:00:00\",\n  \"startLocation\": \"Village\",\n  \"finishLocation\": \"Mountain Peak\",\n  \"distanceMeters\": 5000,\n  \"maxParticipants\": 20,\n  \"type\": \"INDIVIDUAL\",\n  \"organizer\": \"Race Committee\",\n  \"registrationDeadline\": \"2027-06-10T10:00:00\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Race Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/races/1/status",
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"OPEN_FOR_REGISTRATION\"\n}" }
+          }
+        },
+        {
+          "name": "Delete Race",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/races/1" }
+        }
+      ]
+    },
+    {
+      "name": "Registrations",
+      "item": [
+        {
+          "name": "Register Competitor for Race",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/races/1/registrations",
+            "body": { "mode": "raw", "raw": "{\n  \"competitorId\": 1\n}" }
+          }
+        },
+        {
+          "name": "Register Team for Race",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/races/1/registrations",
+            "body": { "mode": "raw", "raw": "{\n  \"teamId\": 1\n}" }
+          }
+        },
+        {
+          "name": "List Registrations for Race",
+          "request": { "method": "GET", "url": "{{baseUrl}}/races/1/registrations" }
+        },
+        {
+          "name": "Get Registration by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/registrations/1" }
+        },
+        {
+          "name": "Approve Registration",
+          "request": { "method": "PATCH", "url": "{{baseUrl}}/registrations/1/approve" }
+        },
+        {
+          "name": "Reject Registration",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/registrations/1/reject",
+            "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Failed pre-race medical check\"\n}" }
+          }
+        },
+        {
+          "name": "Cancel Registration",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/registrations/1" }
+        }
+      ]
+    },
+    {
+      "name": "Results & Standings",
+      "item": [
+        {
+          "name": "Record Result",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/races/1/results",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registrationId\": 1,\n  \"finalPosition\": 1,\n  \"completionTimeSeconds\": 320.5,\n  \"status\": \"FINISHED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Results for Race",
+          "request": { "method": "GET", "url": "{{baseUrl}}/races/1/results" }
+        },
+        {
+          "name": "Update Result",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/results/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registrationId\": 1,\n  \"finalPosition\": 1,\n  \"completionTimeSeconds\": 315.0,\n  \"status\": \"FINISHED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Result by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/results/1" }
+        },
+        {
+          "name": "Overall Standings",
+          "request": { "method": "GET", "url": "{{baseUrl}}/standings" }
+        },
+        {
+          "name": "Competitor Standings",
+          "request": { "method": "GET", "url": "{{baseUrl}}/standings/competitors" }
+        },
+        {
+          "name": "Team Standings",
+          "request": { "method": "GET", "url": "{{baseUrl}}/standings/teams" }
+        }
+      ]
+    },
+    {
+      "name": "Audit Log",
+      "item": [
+        {
+          "name": "List Audit Logs",
+          "request": { "method": "GET", "url": "{{baseUrl}}/audit-logs?page=0&size=20" }
+        },
+        {
+          "name": "List Audit Logs (filtered by entity type)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/audit-logs?entityType=Competitor" }
+        }
+      ]
+    }
+  ]
+}
